@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private int highScore;
     private int currentScore;
     private static final int POINTS_PER_QUESTION = 5;
-    private static final int MAX_POINTS = 100;
+    private static final int MAX_POINTS = (913 * 5);
 
 
 
@@ -83,9 +83,7 @@ public class MainActivity extends AppCompatActivity {
             setQuestionToView(questions);
         });
 
-        mainBinding.highScoreButton.setOnClickListener(view -> {
-            setSnackbar(750, getResources().getString(R.string.highScoreText) + highScore + " / " + MAX_POINTS, Gravity.CENTER, 1000);
-        });
+        mainBinding.highScoreButton.setOnClickListener(view -> setSnackbar(750, getResources().getString(R.string.highScoreText) + highScore + " / " + MAX_POINTS, Gravity.CENTER, 1000));
 
 
 
@@ -103,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
             currentScore = 0;
             questions = new Repository().getQuestions(this::setQuestionToView);
             mainBinding.nextButton.setText(R.string.nextButton);
-            return;
         }
     }
 
@@ -283,9 +280,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.setTitle(title);
         dialog.setMessage(message);
-        dialog.setPositiveButton("I understand", (dialog1, id) -> {
-            finish();
-        });
+        dialog.setPositiveButton("I understand", (dialog1, id) -> finish());
         final AlertDialog alert = dialog.create();
         alert.show();
     }

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Trivia</string>
+    <string name="titleText">Trivia</string>
+    <string name="trueButton">TRUE</string>
+    <string name="falseButton">false</string>
+    <string name="nextButton">next</string>
+    <string name="questionNoFormated">Question: %d/%d</string>
+    <string name="correct">Correct!</string>
+    <string name="incorrect">Incorrect!</string>
+    <string name="retakeButton">Retake</string>
+    <string name="prompt_text">Hello Wolrd, this is where we are going to add the actual text to be shown!</string>
+    <string name="prompt_text_question_number">Question: 45/89</string>
+    <string name="highscore">Highscore</string>
+    <string name="highScoreText">"Highscore: "</string>
+    <string name="pointsPromtText">Points: 5</string>
+    <string name="points">Points: </string>
+</resources>

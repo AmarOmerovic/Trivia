@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#141A33"
+        tools:context=".MainActivity">
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/titleText"
+                    style="@style/MainTextStyle"
+                    android:layout_width="0dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/roboto_slab"
+                    android:gravity="center"
+                    android:text="@string/titleText"
+                    android:textColor="#6B6B6B"
+                    android:textSize="100sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.05"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <TextView
+                    android:id="@+id/questionNo"
+                    style="@style/MainTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center"
+                    android:text="@string/prompt_text_question_number"
+                    android:textColor="@color/white"
+                    android:textSize="40sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/titleText" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView"
+                    android:layout_width="0dp"
+                    android:layout_height="350dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="#1B213A"
+                    android:elevation="20dp"
+                    app:cardCornerRadius="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/questionNo">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/pointsTextView"
+                            style="@style/MainTextStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:text="@string/pointsPromtText"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.029"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.021" />
+
+                        <TextView
+                            android:id="@+id/questionTextView"
+                            style="@style/MainTextStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="48dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="8dp"
+                            android:gravity="center|start"
+                            android:padding="10dp"
+                            android:text="@string/prompt_text"
+                            android:textColor="@color/white"
+                            android:textSize="22sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="1.0"
+                            tools:layout_conversion_absoluteHeight="160dp"
+                            tools:layout_conversion_absoluteWidth="276dp" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <Button
+                    android:id="@+id/trueButton"
+                    style="@style/buttonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="75dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="#1B213A"
+                    android:text="@string/trueButton"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    app:cornerRadius="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cardView"
+                    tools:ignore="DuplicateSpeakableTextCheck" />
+
+                <Button
+                    android:id="@+id/falseButton"
+                    style="@style/buttonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="75dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="#1B213A"
+                    android:text="@string/falseButton"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    app:cornerRadius="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/trueButton" />
+
+                <Button
+                    android:id="@+id/nextButton"
+                    style="@style/buttonStyle"
+                    android:layout_width="140dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:backgroundTint="#1B213A"
+                    android:text="@string/nextButton"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    app:cornerRadius="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.979"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/falseButton"
+                    app:layout_constraintVertical_bias="0.583" />
+
+                <Button
+                    android:id="@+id/highScoreButton"
+                    style="@style/buttonStyle"
+                    android:layout_width="140dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="#1B213A"
+                    android:text="@string/highscore"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    app:cornerRadius="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/falseButton"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <Button
+                    android:id="@+id/restartButton"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/icons8_repeat_60"
+                    android:backgroundTint="#FFFFFF"
+                    android:backgroundTintMode="multiply"
+                    android:contentDescription="@string/trueButton"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/nextButton"
+                    app:layout_constraintStart_toEndOf="@+id/highScoreButton"
+                    app:layout_constraintTop_toBottomOf="@+id/falseButton" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

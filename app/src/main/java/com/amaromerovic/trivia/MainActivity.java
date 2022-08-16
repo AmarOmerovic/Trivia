@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -41,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private int currentScore;
     private static final int POINTS_PER_QUESTION = 5;
     private static final int MAX_POINTS = (913 * 5);
-
+    private SoundPool soundPool;
+    private int correctSound, wrongSound, swipeSound, popUpSound;
 
 
     @Override
@@ -49,11 +52,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (!isOnline()){
+        if (!isOnline()) {
             alert("There was a problem with your internet connection. Please make sure that your connection is stable before you keep using the app.", "No internet connection!");
         }
 
         mainBinding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
+
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                .build();
+
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(4)
+                .setAudioAttributes(audioAttributes)
+                .build();
+
+        correctSound = soundPool.load(this, R.raw.correct, 1);
+        wrongSound = soundPool.load(this, R.raw.wrong, 1);
+        swipeSound = soundPool.load(this, R.raw.swipe, 1);
+        popUpSound = soundPool.load(this, R.raw.message_pop_alert, 1);
+
         questionIndex = 0;
         questions = new Repository().getQuestions(this::setQuestionToView);
         loadGame();
@@ -145,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
             textView.setTextSize(20);
         }
         view.setLayoutParams(params);
+        soundPool.play(popUpSound, 1, 1, 0, 0, 1);
         snackbar.show();
     }
 
@@ -155,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
         shake.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
+                soundPool.play(wrongSound, 1, 1, 0, 0, 1);
                 mainBinding.questionTextView.setBackgroundColor(Color.RED);
                 Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 vibrator.vibrate(300);
@@ -180,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
         slide.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
+                soundPool.play(swipeSound, 1, 1, 0, 0, 1);
             }
 
             @Override
@@ -232,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
+                soundPool.play(correctSound, 1, 1, 0, 0, 1);
                 mainBinding.questionTextView.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.animationGreen));
                 Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 vibrator.vibrate(150);
@@ -289,5 +311,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         saveGame();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (soundPool != null) {
+            soundPool.release();
+            soundPool = null;
+        }
     }
 }

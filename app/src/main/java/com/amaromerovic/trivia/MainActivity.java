@@ -3,6 +3,7 @@ package com.amaromerovic.trivia;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.AudioAttributes;
@@ -105,6 +106,13 @@ public class MainActivity extends AppCompatActivity {
         mainBinding.highScoreButton.setOnClickListener(view -> setSnackbar(750, getResources().getString(R.string.highScoreText) + highScore + " / " + MAX_POINTS, Gravity.CENTER, 1000));
 
 
+        mainBinding.shareButton.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_SUBJECT, "I am playing Trivia");
+            intent.putExtra(Intent.EXTRA_TEXT, "My current score: " + currentScore + "\n My highscore is: " + highScore);
+            startActivity(intent);
+        });
 
 
     }
@@ -207,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 setQuestionToView(questions);
+                saveGame();
                 slideInAnimation();
             }
 

@@ -81,7 +81,7 @@
                         <TextView
                             android:id="@+id/pointsTextView"
                             style="@style/MainTextStyle"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="30dp"
                             android:layout_marginStart="10dp"
                             android:layout_marginTop="8dp"
@@ -119,6 +119,21 @@
                             app:layout_constraintVertical_bias="1.0"
                             tools:layout_conversion_absoluteHeight="160dp"
                             tools:layout_conversion_absoluteWidth="276dp" />
+
+                        <Button
+                            android:id="@+id/shareButton"
+                            android:layout_width="50dp"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="24dp"
+                            android:background="@drawable/ic_baseline_share_24"
+                            android:backgroundTint="@color/white"
+                            android:contentDescription="@string/share"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="1.0"
+                            app:layout_constraintStart_toEndOf="@+id/pointsTextView"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:ignore="TouchTargetSizeCheck" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.cardview.widget.CardView>

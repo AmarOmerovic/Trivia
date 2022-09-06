@@ -20,6 +20,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -28,6 +29,12 @@ import androidx.databinding.DataBindingUtil;
 import com.amaromerovic.trivia.data.Repository;
 import com.amaromerovic.trivia.databinding.ActivityMainBinding;
 import com.amaromerovic.trivia.model.Question;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -46,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int MAX_POINTS = (913 * 5);
     private SoundPool soundPool;
     private int correctSound, wrongSound, swipeSound, popUpSound;
-
+    private InterstitialAd interstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +63,9 @@ public class MainActivity extends AppCompatActivity {
         if (!isOnline()) {
             alert("There was a problem with your internet connection. Please make sure that your connection is stable before you keep using the app.", "No internet connection!");
         }
-
         mainBinding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
+
+        MobileAds.initialize(getApplicationContext(), initializationStatus -> setUpAdds());
 
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -120,16 +128,22 @@ public class MainActivity extends AppCompatActivity {
     private void getNextQuestionAfterAnswer() {
         questionIndex++;
         slideOutAnimation();
-        if (questionIndex == (questions.size() - 1)){
+        if (questionIndex == (questions.size() - 1)) {
             mainBinding.nextButton.setText(R.string.retakeButton);
-        } else if (questionIndex == questions.size()){
+        } else if (questionIndex == questions.size()) {
             saveGame();
             questionIndex = 0;
             currentScore = 0;
             questions = new Repository().getQuestions(this::setQuestionToView);
             mainBinding.nextButton.setText(R.string.nextButton);
         }
+
+        if (questionIndex % 5 == 0) {
+            showInterstitial();
+        }
+
     }
+
 
     @SuppressLint("SetTextI18n")
     private void setQuestionToView(List<Question> questionArrayList) {
@@ -138,18 +152,18 @@ public class MainActivity extends AppCompatActivity {
         mainBinding.pointsTextView.setText(getResources().getString(R.string.points) + " " + currentScore);
     }
 
-    private void checkAnswer(boolean usersChoice){
+    private void checkAnswer(boolean usersChoice) {
         mainBinding.trueButton.setClickable(false);
         mainBinding.falseButton.setClickable(false);
         mainBinding.nextButton.setClickable(false);
         mainBinding.restartButton.setClickable(false);
         int snackMessageIt = R.string.incorrect;
-        if (questions.get(questionIndex).isAnswer() == usersChoice){
+        if (questions.get(questionIndex).isAnswer() == usersChoice) {
             currentScore += POINTS_PER_QUESTION;
             snackMessageIt = R.string.correct;
             fadeAnimation();
         } else {
-            if (currentScore >= POINTS_PER_QUESTION){
+            if (currentScore >= POINTS_PER_QUESTION) {
                 currentScore -= POINTS_PER_QUESTION;
             }
             shakeAnimation();
@@ -162,11 +176,11 @@ public class MainActivity extends AppCompatActivity {
         snackbar = Snackbar.make(mainBinding.cardView, snackMessageIt, duration);
         snackbar.setBackgroundTint(ContextCompat.getColor(this, R.color.black));
         View view = snackbar.getView();
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)view.getLayoutParams();
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
         params.gravity = gravity;
         params.width = layoutParams;
         TextView textView = view.findViewById(com.google.android.material.R.id.snackbar_text);
-        if (textView != null){
+        if (textView != null) {
             textView.setGravity(Gravity.CENTER);
             textView.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
             textView.setTextSize(20);
@@ -176,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         snackbar.show();
     }
 
-    private void shakeAnimation(){
+    private void shakeAnimation() {
         Animation shake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake_animation);
         mainBinding.cardView.setAnimation(shake);
 
@@ -202,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void slideOutAnimation(){
+    private void slideOutAnimation() {
         Animation slide = AnimationUtils.loadAnimation(MainActivity.this, R.anim.slide_out_left);
         mainBinding.cardView.setAnimation(slide);
 
@@ -226,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void slideInAnimation(){
+    private void slideInAnimation() {
         Animation slide = AnimationUtils.loadAnimation(MainActivity.this, R.anim.slide_in_left);
         mainBinding.cardView.setAnimation(slide);
 
@@ -291,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
     private void saveGame() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        if (currentScore > highScore){
+        if (currentScore > highScore) {
             highScore = currentScore;
             editor.putInt(SHARED_PREF_HIGHSCORE_KEY, highScore);
         }
@@ -306,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    private void alert(String message, String title){
+    private void alert(String message, String title) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
         dialog.setCancelable(false);
         dialog.setTitle(title);
@@ -314,6 +328,44 @@ public class MainActivity extends AppCompatActivity {
         dialog.setPositiveButton("I understand", (dialog1, id) -> finish());
         final AlertDialog alert = dialog.create();
         alert.show();
+    }
+
+    private void setUpAdds() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(
+                getApplicationContext(),
+                "ca-app-pub-3940256099942544/1033173712",
+                adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        MainActivity.this.interstitialAd = interstitialAd;
+                        interstitialAd.setFullScreenContentCallback(
+                                new FullScreenContentCallback() {
+                                    @Override
+                                    public void onAdDismissedFullScreenContent() {
+                                        MainActivity.this.interstitialAd = null;
+                                    }
+
+                                    @Override
+                                    public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                                        MainActivity.this.interstitialAd = null;
+                                    }
+
+                                    @Override
+                                    public void onAdShowedFullScreenContent() {
+                                    }
+                                });
+                    }
+                });
+    }
+
+    private void showInterstitial() {
+        if (interstitialAd != null) {
+            interstitialAd.show(this);
+        } else {
+            setUpAdds();
+        }
     }
 
     @Override
@@ -330,4 +382,5 @@ public class MainActivity extends AppCompatActivity {
             soundPool = null;
         }
     }
+
 }
